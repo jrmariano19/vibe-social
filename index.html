@@ -7,34 +7,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:Inter,system-ui,sans-serif; background:#000; color:#fff; min-height:100vh; }
+body { font-family:Inter,system-ui,sans-serif; background:#000; color:#fff; min-height:100vh; overflow-x:hidden; }
 .hidden { display:none !important; }
 .card { background:#111; border:1px solid #222; border-radius:24px; padding:32px; width:100%; max-width:420px; margin:40px auto; }
 h1 { font-size:34px; font-weight:700; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:24px; }
 input { width:100%; padding:14px 16px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:14px; color:#fff; font-size:15px; outline:none; }
-button { width:100%; padding:14px; margin-top:12px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:14px; color:#fff; font-weight:600; cursor:pointer; font-size:15px; }
-button.secondary { background:#222; }
+button.primary { width:100%; padding:14px; margin-top:12px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:14px; color:#fff; font-weight:600; cursor:pointer; font-size:15px; }
+button.secondary { background:#222; border:none; border-radius:14px; color:#fff; padding:7px 14px; font-size:13px; cursor:pointer; }
 .toggle { text-align:center; margin-top:16px; color:#888; cursor:pointer; font-size:14px; }
 .error { color:#ef4444; font-size:13px; margin-top:10px; text-align:center; min-height:18px; }
 
-#app { max-width:500px; margin:0 auto; padding-bottom:90px; }
+#app { max-width:500px; margin:0 auto; padding-bottom:80px; }
 .header { position:sticky; top:0; background:rgba(0,0,0,.92); backdrop-filter:blur(16px); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #1a1a1a; z-index:30; }
 .logo { font-weight:700; font-size:24px; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .stories { display:flex; gap:14px; padding:14px 16px; overflow-x:auto; scrollbar-width:none; }
 .stories::-webkit-scrollbar { display:none; }
-.story { text-align:center; min-width:72px; }
-.story-ring { width:68px; height:68px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); margin:0 auto 5px; }
-.story-ring img, .story-ring div { width:100%; height:100%; border-radius:50%; object-fit:cover; border:2.5px solid #000; background:#1a1a1a; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.story { text-align:center; min-width:72px; cursor:pointer; }
+.story-ring { width:68px; height:68px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); margin:0 auto 5px; transition:transform .2s; }
+.story:hover .story-ring { transform:scale(1.05); }
+.story-ring img { width:100%; height:100%; border-radius:50%; object-fit:cover; border:2.5px solid #000; }
 .story span { font-size:11px; color:#aaa; }
-.post { border-bottom:1px solid #1a1a1a; }
+.post { border-bottom:1px solid #1a1a1a; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 .post-header { display:flex; align-items:center; gap:10px; padding:12px 14px; }
-.avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; background:linear-gradient(135deg,#a855f7,#ec4899); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
-.post-img { width:100%; display:block; max-height:480px; object-fit:cover; background:#111; }
-.post-actions { display:flex; align-items:center; gap:16px; padding:10px 14px 4px; }
-.action { cursor:pointer; background:none; border:none; color:#fff; padding:6px; transition:transform .15s; display:flex; align-items:center; justify-content:center; }
-.action svg { pointer-events:none; }
-.action:active { transform:scale(1.25); }
-.action.liked { color:#ef4444; }
+.avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; }
+.post-img { width:100%; display:block; max-height:520px; object-fit:cover; background:#111; }
+.post-actions { display:flex; align-items:center; gap:18px; padding:10px 14px 4px; }
+.action { background:none; border:none; color:#fff; padding:4px; cursor:pointer; display:flex; align-items:center; transition:transform .15s; }
+.action:active { transform:scale(1.2); }
+.action.liked svg { fill:#ef4444; stroke:#ef4444; }
 .post-likes { font-weight:600; font-size:14px; padding:0 14px 4px; }
 .post-text { padding:2px 14px 10px; font-size:14px; line-height:1.45; }
 .post-text strong { margin-right:4px; }
@@ -44,12 +45,18 @@ button.secondary { background:#222; }
 .comment strong { margin-right:5px; }
 .comment-input { display:flex; gap:8px; margin-top:8px; }
 .comment-input input { flex:1; padding:8px 12px; border-radius:20px; background:#1a1a1a; border:1px solid #333; color:#fff; font-size:13px; }
-.comment-input button { width:auto; padding:8px 14px; margin:0; border-radius:20px; font-size:13px; }
+.comment-input button { width:auto; padding:8px 14px; margin:0; border-radius:20px; font-size:13px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; color:#fff; }
 .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background:#000; border-top:1px solid #1a1a1a; display:flex; justify-content:space-around; padding:8px 0 14px; z-index:30; }
-.bottom-nav button { background:none; border:none; color:#888; font-size:26px; width:auto; padding:6px; margin:0; }
+.bottom-nav button { background:none; border:none; color:#888; padding:6px; cursor:pointer; }
 .bottom-nav button.active { color:#fff; }
 .admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:2px 6px; border-radius:8px; margin-left:6px; }
 .create-box { padding:8px 14px 12px; }
+.view { display:none; }
+.view.active { display:block; }
+.profile { padding:20px 16px; text-align:center; }
+.profile img { width:90px; height:90px; border-radius:50%; object-fit:cover; margin-bottom:12px; }
+.profile h2 { font-size:20px; margin-bottom:4px; }
+.profile p { color:#888; font-size:14px; }
 </style>
 </head>
 <body>
@@ -60,7 +67,7 @@ button.secondary { background:#222; }
     <input id="username" placeholder="Usuário" value="admin">
     <input id="email" type="email" placeholder="Email" class="hidden">
     <input id="password" type="password" placeholder="Senha" value="@@Jm6134@@">
-    <button onclick="doAuth()">Entrar</button>
+    <button class="primary" onclick="doAuth()">Entrar</button>
     <div class="toggle" onclick="toggleAuth()">Não tem conta? Cadastre-se</div>
     <div class="error" id="authError"></div>
   </div>
@@ -71,34 +78,52 @@ button.secondary { background:#222; }
     <div class="logo">Vibe</div>
     <div>
       <span id="userLabel"></span>
-      <button class="secondary" style="width:auto;padding:6px 12px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
+      <button class="secondary" onclick="logout()">Sair</button>
     </div>
   </div>
 
-  <div class="stories" id="stories"></div>
-
-  <div class="create-box">
-    <input id="newPost" placeholder="No que você está pensando?">
-    <button onclick="publish()">Publicar</button>
+  <!-- FEED VIEW -->
+  <div id="viewFeed" class="view active">
+    <div class="stories" id="stories"></div>
+    <div class="create-box">
+      <input id="newPost" placeholder="No que você está pensando?">
+      <button class="primary" onclick="publish()">Publicar</button>
+    </div>
+    <div id="feed"></div>
   </div>
 
-  <div id="feed"></div>
+  <!-- SEARCH VIEW -->
+  <div id="viewSearch" class="view">
+    <div style="padding:20px;text-align:center;color:#888;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.5;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <p>Busca em breve</p>
+    </div>
+  </div>
+
+  <!-- PROFILE VIEW -->
+  <div id="viewProfile" class="view">
+    <div class="profile">
+      <img id="profileAvatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200" alt="">
+      <h2 id="profileName">Você</h2>
+      <p>0 posts · 0 seguidores</p>
+    </div>
+  </div>
 
   <div class="bottom-nav">
-    <button class="active" id="navHome"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
-    <button id="navSearch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
-    <button id="navCreate"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
-    <button id="navActivity"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-    <button id="navProfile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <button class="active" data-view="viewFeed"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
+    <button data-view="viewSearch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    <button onclick="document.getElementById('newPost').focus(); switchView('viewFeed')"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+    <button data-view="viewSearch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+    <button data-view="viewProfile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
   </div>
 </div>
 
 <script>
-const DB_KEY = "vibe_db_v3";
+const DB_KEY = "vibe_db_final";
 let isRegister = false;
 
-const SAMPLE_POSTS = [
-  { id:1, username:"Maria Silva", avatar:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", content:"Pôr do sol nas montanhas hoje foi simplesmente mágico! 🌅✨ #Vibe", likes:1284, comments:[{user:"Lucas", text:"Que foto incrível!"}], time:"há 2h" },
+const SAMPLE = [
+  { id:1, username:"Maria Silva", avatar:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", content:"Pôr do sol nas montanhas hoje foi simplesmente mágico! 🌅✨ #Vibe", likes:1284, comments:[{user:"Lucas",text:"Que foto incrível!"}], time:"há 2h" },
   { id:2, username:"Lucas Oliveira", avatar:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800", content:"Bowl colorido e saudável para começar o dia! 🥗💚", likes:892, comments:[], time:"há 5h" },
   { id:3, username:"Sofia Costa", avatar:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", img:"https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800", content:"A cidade nunca dorme. Noite mágica 🌃💜 #Vibe", likes:2156, comments:[], time:"há 1 dia" },
   { id:4, username:"Você", avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100", img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=800", content:"Meu companheiro de aventuras hoje! 🐶☀️", likes:543, comments:[], time:"agora" }
@@ -107,10 +132,7 @@ const SAMPLE_POSTS = [
 function loadDB() {
   const raw = localStorage.getItem(DB_KEY);
   if (!raw) {
-    const db = {
-      users: { admin: { username:"admin", email:"admin@vibe.com", password:"@@Jm6134@@", is_admin:true } },
-      posts: SAMPLE_POSTS
-    };
+    const db = { users:{ admin:{ username:"admin", email:"admin@vibe.com", password:"@@Jm6134@@", is_admin:true } }, posts:SAMPLE };
     localStorage.setItem(DB_KEY, JSON.stringify(db));
     return db;
   }
@@ -152,54 +174,50 @@ function showApp(user){
   $("auth").classList.add("hidden");
   $("app").classList.remove("hidden");
   $("userLabel").innerHTML = user.username + (user.is_admin ? '<span class="admin-badge">ADMIN</span>' : '');
+  $("profileName").textContent = user.username;
   renderStories();
   loadPosts();
 }
 
 function renderStories(){
-  const stories = [
+  const list = [
     {name:"Você", img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150"},
     {name:"Maria", img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"},
     {name:"Lucas", img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"},
     {name:"Sofia", img:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"},
     {name:"Max", img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=150"}
   ];
-  $("stories").innerHTML = stories.map(s => `
-    <div class="story">
-      <div class="story-ring"><img src="${s.img}" alt="${s.name}"></div>
-      <span>${s.name}</span>
-    </div>
-  `).join("");
+  $("stories").innerHTML = list.map(s => `<div class="story"><div class="story-ring"><img src="${s.img}" alt="${s.name}"></div><span>${s.name}</span></div>`).join("");
 }
 
 function loadPosts(){
   const db = loadDB();
   const posts = [...db.posts].reverse();
-  $("feed").innerHTML = posts.map((p, idx) => `
-    <div class="post" data-id="${p.id || idx}">
+  $("feed").innerHTML = posts.map((p,i) => `
+    <div class="post">
       <div class="post-header">
-        <img class="avatar" src="${p.avatar || ''}" onerror="this.style.background='linear-gradient(135deg,#a855f7,#ec4899)';this.src=''">
-        <div><strong>${p.username}</strong><br><small style="color:#888">${p.time || "agora"}</small></div>
+        <img class="avatar" src="${p.avatar||''}" onerror="this.src='https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100'">
+        <div><strong>${p.username}</strong><br><small style="color:#888">${p.time||"agora"}</small></div>
       </div>
-      ${p.img ? `<img class="post-img" src="${p.img}" alt="">` : `<div class="post-img" style="height:200px;display:flex;align-items:center;justify-content:center;font-size:48px;">✨</div>`}
+      ${p.img ? `<img class="post-img" src="${p.img}" alt="">` : ""}
       <div class="post-actions">
-        <button class="action like-btn ${p.liked?'liked':''}" onclick="toggleLike(this, ${p.id||idx})">
+        <button class="action like-btn ${p.liked?'liked':''}" onclick="toggleLike(this,${p.id||i})">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="${p.liked?'#ef4444':'none'}" stroke="${p.liked?'#ef4444':'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
-        <button class="action" onclick="toggleComments(this)">
+        <button class="action" onclick="this.closest('.post').querySelector('.comments').classList.toggle('open')">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </button>
         <button class="action">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         </button>
       </div>
-      <div class="post-likes"><span class="like-count">${p.likes || 0}</span> curtidas</div>
+      <div class="post-likes"><span class="like-count">${p.likes||0}</span> curtidas</div>
       <div class="post-text"><strong>${p.username}</strong> ${escapeHtml(p.content)}</div>
       <div class="comments">
-        ${(p.comments||[]).map(c => `<div class="comment"><strong>${c.user}</strong>${escapeHtml(c.text)}</div>`).join("")}
+        ${(p.comments||[]).map(c=>`<div class="comment"><strong>${c.user}</strong>${escapeHtml(c.text)}</div>`).join("")}
         <div class="comment-input">
-          <input placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter') addComment(this, ${p.id||idx})">
-          <button onclick="addComment(this.previousElementSibling, ${p.id||idx})">Enviar</button>
+          <input placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter')addComment(this,${p.id||i})">
+          <button onclick="addComment(this.previousElementSibling,${p.id||i})">Enviar</button>
         </div>
       </div>
     </div>
@@ -208,54 +226,48 @@ function loadPosts(){
 
 function toggleLike(btn, id){
   const db = loadDB();
-  const post = db.posts.find(p => p.id === id) || db.posts[id];
+  const post = db.posts.find(p=>p.id===id) || db.posts[id];
   if (!post) return;
   post.liked = !post.liked;
-  post.likes = (post.likes||0) + (post.liked ? 1 : -1);
+  post.likes = (post.likes||0) + (post.liked?1:-1);
   saveDB(db);
-  btn.classList.toggle("liked", post.liked);
+  const svg = btn.querySelector("svg");
+  if (post.liked) { svg.setAttribute("fill","#ef4444"); svg.setAttribute("stroke","#ef4444"); btn.classList.add("liked"); }
+  else { svg.setAttribute("fill","none"); svg.setAttribute("stroke","currentColor"); btn.classList.remove("liked"); }
   btn.closest(".post").querySelector(".like-count").textContent = post.likes;
 }
 
-function toggleComments(btn){
-  btn.closest(".post").querySelector(".comments").classList.toggle("open");
-}
-
 function addComment(input, id){
-  const text = input.value.trim();
-  if (!text) return;
+  const text = input.value.trim(); if (!text) return;
   const db = loadDB();
-  const post = db.posts.find(p => p.id === id) || db.posts[id];
+  const post = db.posts.find(p=>p.id===id) || db.posts[id];
   if (!post) return;
   if (!post.comments) post.comments = [];
   const user = localStorage.getItem("vibe_session") || "Você";
   post.comments.push({user, text});
   saveDB(db);
-  const commentsDiv = input.closest(".comments");
   const div = document.createElement("div");
   div.className = "comment";
   div.innerHTML = `<strong>${user}</strong>${escapeHtml(text)}`;
-  commentsDiv.insertBefore(div, input.parentElement);
+  input.closest(".comments").insertBefore(div, input.parentElement);
   input.value = "";
 }
 
 function publish(){
-  const content = $("newPost").value.trim();
-  if (!content) return;
+  const content = $("newPost").value.trim(); if (!content) return;
   const db = loadDB();
   const username = localStorage.getItem("vibe_session") || "Você";
-  db.posts.push({
-    id: Date.now(),
-    username,
-    content,
-    likes: 0,
-    comments: [],
-    time: "agora",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"
-  });
+  db.posts.push({ id:Date.now(), username, content, likes:0, comments:[], time:"agora", avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" });
   saveDB(db);
   $("newPost").value = "";
   loadPosts();
+}
+
+function switchView(id){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
+  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+  document.querySelector(`.bottom-nav button[data-view="${id}"]`)?.classList.add("active");
 }
 
 function logout(){
@@ -265,37 +277,18 @@ function logout(){
   $("password").value = "";
 }
 
-function escapeHtml(s){
-  return String(s||"").replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
-}
+function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, c=>({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c])); }
+
+// Nav clicks
+document.querySelectorAll(".bottom-nav button[data-view]").forEach(btn => {
+  btn.addEventListener("click", () => switchView(btn.dataset.view));
+});
 
 const session = localStorage.getItem("vibe_session");
 if (session) {
   const db = loadDB();
   if (db.users[session]) showApp(db.users[session]);
 }
-
-// Bottom nav - no more alerts
-document.getElementById("navHome")?.addEventListener("click", () => {
-  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
-  document.getElementById("navHome").classList.add("active");
-  window.scrollTo({top:0, behavior:"smooth"});
-});
-document.getElementById("navCreate")?.addEventListener("click", () => {
-  const input = document.getElementById("newPost");
-  if (input) { input.focus(); input.scrollIntoView({behavior:"smooth", block:"center"}); }
-});
-document.getElementById("navProfile")?.addEventListener("click", () => {
-  const user = localStorage.getItem("vibe_session") || "Você";
-  alert("Perfil de " + user + "\n(Em breve: posts, seguidores, etc.)");
-});
-document.getElementById("navSearch")?.addEventListener("click", () => {
-  alert("Busca em breve");
-});
-document.getElementById("navActivity")?.addEventListener("click", () => {
-  alert("Atividade em breve");
-});
-
 </script>
 </body>
 </html>
