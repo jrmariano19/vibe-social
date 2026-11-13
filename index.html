@@ -9,33 +9,39 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:Inter,system-ui,sans-serif; background:#000; color:#fff; min-height:100vh; }
 .hidden { display:none !important; }
-.card { background:#111; border:1px solid #222; border-radius:20px; padding:28px; width:100%; max-width:420px; margin:40px auto; }
-h1 { font-size:32px; font-weight:700; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:20px; }
-input { width:100%; padding:14px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:12px; color:#fff; font-size:15px; }
-button { width:100%; padding:14px; margin-top:10px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:12px; color:#fff; font-weight:600; cursor:pointer; }
+.card { background:#111; border:1px solid #222; border-radius:24px; padding:32px; width:100%; max-width:420px; margin:40px auto; }
+h1 { font-size:34px; font-weight:700; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:24px; }
+input { width:100%; padding:14px 16px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:14px; color:#fff; font-size:15px; }
+button { width:100%; padding:14px; margin-top:12px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:14px; color:#fff; font-weight:600; cursor:pointer; font-size:15px; }
 button.secondary { background:#222; }
 button:hover { opacity:.92; }
-.toggle { text-align:center; margin-top:14px; color:#888; cursor:pointer; font-size:14px; }
-.error { color:#ef4444; font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+.toggle { text-align:center; margin-top:16px; color:#888; cursor:pointer; font-size:14px; }
+.error { color:#ef4444; font-size:13px; margin-top:10px; text-align:center; min-height:18px; }
 .success { color:#22c55e; }
 
-#app { max-width:480px; margin:0 auto; padding-bottom:80px; }
-.header { position:sticky; top:0; background:#000; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; z-index:10; }
-.logo { font-weight:700; font-size:22px; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.stories { display:flex; gap:14px; padding:12px 16px; overflow-x:auto; }
-.story { text-align:center; min-width:70px; }
-.story-ring { width:64px; height:64px; border-radius:50%; padding:2px; background:linear-gradient(45deg,#a855f7,#ec4899); margin:0 auto 4px; }
-.story-ring div { width:100%; height:100%; border-radius:50%; background:#222; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:20px; }
-.story span { font-size:11px; color:#aaa; }
-.post { border-bottom:1px solid #222; padding:12px 0; }
-.post-header { display:flex; align-items:center; gap:10px; padding:0 16px 10px; }
-.avatar { width:36px; height:36px; border-radius:50%; background:#333; display:flex; align-items:center; justify-content:center; font-weight:600; }
-.post-text { padding:0 16px 8px; font-size:14px; line-height:1.45; }
-.post-actions { display:flex; gap:18px; padding:10px 16px; font-size:20px; }
-.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:#000; border-top:1px solid #222; display:flex; justify-content:space-around; padding:10px 0 14px; }
-.bottom-nav button { background:none; border:none; color:#888; font-size:24px; width:auto; padding:0; margin:0; }
+#app { max-width:500px; margin:0 auto; padding-bottom:90px; }
+.header { position:sticky; top:0; background:rgba(0,0,0,.9); backdrop-filter:blur(12px); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; z-index:20; }
+.logo { font-weight:700; font-size:24px; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stories { display:flex; gap:16px; padding:16px; overflow-x:auto; scrollbar-width:none; }
+.stories::-webkit-scrollbar { display:none; }
+.story { text-align:center; min-width:76px; cursor:pointer; }
+.story-ring { width:70px; height:70px; border-radius:50%; padding:3px; background:linear-gradient(45deg,#a855f7,#ec4899); margin:0 auto 6px; transition:transform .2s; }
+.story:hover .story-ring { transform:scale(1.06); }
+.story-ring div { width:100%; height:100%; border-radius:50%; background:#1a1a1a; border:3px solid #000; display:flex; align-items:center; justify-content:center; font-size:26px; }
+.story span { font-size:12px; color:#aaa; }
+.post { border-bottom:1px solid #222; padding:8px 0 16px; }
+.post-header { display:flex; align-items:center; gap:12px; padding:12px 16px; }
+.avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#a855f7,#ec4899); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; }
+.post-img { width:100%; max-height:420px; object-fit:cover; background:#111; display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; min-height:200px; }
+.post-text { padding:10px 16px 6px; font-size:14.5px; line-height:1.5; }
+.post-actions { display:flex; gap:20px; padding:8px 16px; font-size:22px; }
+.post-actions span { cursor:pointer; transition:transform .15s; }
+.post-actions span:hover { transform:scale(1.15); }
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background:#000; border-top:1px solid #222; display:flex; justify-content:space-around; padding:10px 0 16px; }
+.bottom-nav button { background:none; border:none; color:#888; font-size:26px; width:auto; padding:0; margin:0; }
 .bottom-nav button.active { color:#fff; }
-.admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:2px 6px; border-radius:8px; margin-left:6px; }
+.admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:3px 7px; border-radius:10px; margin-left:6px; font-weight:600; }
+.create-box { padding:0 16px 16px; }
 </style>
 </head>
 <body>
@@ -57,20 +63,25 @@ button:hover { opacity:.92; }
     <div class="logo">Vibe</div>
     <div>
       <span id="userLabel"></span>
-      <button class="secondary" style="width:auto;padding:6px 12px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
+      <button class="secondary" style="width:auto;padding:7px 14px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
     </div>
   </div>
+
   <div class="stories">
     <div class="story"><div class="story-ring"><div>👤</div></div><span>Você</span></div>
-    <div class="story"><div class="story-ring"><div>🔥</div></div><span>Lucas</span></div>
-    <div class="story"><div class="story-ring"><div>✨</div></div><span>Sofia</span></div>
+    <div class="story"><div class="story-ring"><div>🌅</div></div><span>Maria</span></div>
+    <div class="story"><div class="story-ring"><div>🥗</div></div><span>Lucas</span></div>
+    <div class="story"><div class="story-ring"><div>🌃</div></div><span>Sofia</span></div>
     <div class="story"><div class="story-ring"><div>🐶</div></div><span>Max</span></div>
   </div>
-  <div style="padding:0 16px 12px;">
+
+  <div class="create-box">
     <input id="newPost" placeholder="No que você está pensando?">
     <button onclick="publish()">Publicar</button>
   </div>
+
   <div id="feed"></div>
+
   <div class="bottom-nav">
     <button class="active">🏠</button>
     <button>🔍</button>
@@ -81,7 +92,7 @@ button:hover { opacity:.92; }
 </div>
 
 <script>
-const DB_KEY = "vibe_db";
+const DB_KEY = "vibe_db_v2";
 let isRegister = false;
 
 function loadDB() {
@@ -89,14 +100,14 @@ function loadDB() {
   if (!raw) {
     const db = {
       users: {
-        admin: {
-          username: "admin",
-          email: "admin@vibe.com",
-          password: "@@Jm6134@@",
-          is_admin: true
-        }
+        admin: { username: "admin", email: "admin@vibe.com", password: "@@Jm6134@@", is_admin: true }
       },
-      posts: []
+      posts: [
+        { username: "Maria", content: "Pôr do sol nas montanhas hoje foi simplesmente mágico! 🌅✨ #Vibe", emoji: "🌅", time: "há 2h" },
+        { username: "Lucas", content: "Bowl colorido e saudável para começar o dia com energia! 🥗💚", emoji: "🥗", time: "há 5h" },
+        { username: "Sofia", content: "A cidade nunca dorme. Noite mágica com essas luzes neon. 🌃💜 #Vibe", emoji: "🌃", time: "há 1 dia" },
+        { username: "Você", content: "Meu companheiro de aventuras hoje! Quem mais ama passeios no parque? 🐶☀️", emoji: "🐶", time: "agora" }
+      ]
     };
     localStorage.setItem(DB_KEY, JSON.stringify(db));
     return db;
@@ -104,10 +115,7 @@ function loadDB() {
   return JSON.parse(raw);
 }
 
-function saveDB(db) {
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
-}
-
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 function $(id){ return document.getElementById(id); }
 
 function toggleAuth(){
@@ -126,20 +134,13 @@ function doAuth(){
   const db = loadDB();
 
   if (isRegister) {
-    if (db.users[username]) {
-      $("authError").textContent = "Usuário já existe";
-      return;
-    }
-    if (password.length < 6) {
-      $("authError").textContent = "Senha muito curta";
-      return;
-    }
+    if (db.users[username]) { $("authError").textContent = "Usuário já existe"; return; }
+    if (password.length < 6) { $("authError").textContent = "Senha muito curta"; return; }
     db.users[username] = { username, email, password, is_admin: false };
     saveDB(db);
     $("authError").className = "error success";
     $("authError").textContent = "Cadastro feito! Agora entre.";
-    isRegister = true;
-    toggleAuth();
+    isRegister = true; toggleAuth();
     return;
   }
 
@@ -166,25 +167,22 @@ function loadPosts(){
   $("feed").innerHTML = posts.map(p => `
     <div class="post">
       <div class="post-header">
-        <div class="avatar">${p.username[0].toUpperCase()}</div>
-        <div><strong>${p.username}</strong><br><small style="color:#888">${new Date(p.created_at).toLocaleString("pt-BR")}</small></div>
+        <div class="avatar">${(p.username||"?")[0].toUpperCase()}</div>
+        <div><strong>${p.username}</strong><br><small style="color:#888">${p.time || new Date(p.created_at||Date.now()).toLocaleString("pt-BR")}</small></div>
       </div>
-      <div class="post-text">${escapeHtml(p.content)}</div>
-      <div class="post-actions">❤️ 💬 📤</div>
+      <div class="post-img">${p.emoji || "📸"}</div>
+      <div class="post-text"><strong>${p.username}</strong> ${escapeHtml(p.content)}</div>
+      <div class="post-actions"><span>❤️</span><span>💬</span><span>📤</span></div>
     </div>
-  `).join("") || "<p style='padding:20px;color:#888;text-align:center;'>Nenhum post ainda. Seja o primeiro!</p>";
+  `).join("") || "<p style='padding:30px;color:#888;text-align:center;'>Nenhum post ainda. Seja o primeiro!</p>";
 }
 
 function publish(){
   const content = $("newPost").value.trim();
   if (!content) return;
   const db = loadDB();
-  const username = localStorage.getItem("vibe_session");
-  db.posts.push({
-    username,
-    content,
-    created_at: new Date().toISOString()
-  });
+  const username = localStorage.getItem("vibe_session") || "Você";
+  db.posts.push({ username, content, emoji: "✨", created_at: new Date().toISOString(), time: "agora" });
   saveDB(db);
   $("newPost").value = "";
   loadPosts();
