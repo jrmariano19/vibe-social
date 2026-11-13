@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Inter,system-ui,sans-serif; background:#000; color:#fff; min-height:100vh; }
+.hidden { display:none !important; }
+.card { background:#111; border:1px solid #222; border-radius:20px; padding:28px; width:100%; max-width:420px; margin:40px auto; }
+h1 { font-size:32px; font-weight:700; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:20px; }
+input { width:100%; padding:14px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:12px; color:#fff; font-size:15px; }
+button { width:100%; padding:14px; margin-top:10px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:12px; color:#fff; font-weight:600; cursor:pointer; }
+button.secondary { background:#222; }
+button:hover { opacity:.92; }
+.toggle { text-align:center; margin-top:14px; color:#888; cursor:pointer; font-size:14px; }
+.error { color:#ef4444; font-size:13px; margin-top:8px; text-align:center; min-height:18px; }
+.success { color:#22c55e; }
+
+#app { max-width:480px; margin:0 auto; padding-bottom:80px; }
+.header { position:sticky; top:0; background:#000; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; z-index:10; }
+.logo { font-weight:700; font-size:22px; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stories { display:flex; gap:14px; padding:12px 16px; overflow-x:auto; }
+.story { text-align:center; min-width:70px; }
+.story-ring { width:64px; height:64px; border-radius:50%; padding:2px; background:linear-gradient(45deg,#a855f7,#ec4899); margin:0 auto 4px; }
+.story-ring div { width:100%; height:100%; border-radius:50%; background:#222; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.story span { font-size:11px; color:#aaa; }
+.post { border-bottom:1px solid #222; padding:12px 0; }
+.post-header { display:flex; align-items:center; gap:10px; padding:0 16px 10px; }
+.avatar { width:36px; height:36px; border-radius:50%; background:#333; display:flex; align-items:center; justify-content:center; font-weight:600; }
+.post-text { padding:0 16px 8px; font-size:14px; line-height:1.45; }
+.post-actions { display:flex; gap:18px; padding:10px 16px; font-size:20px; }
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:#000; border-top:1px solid #222; display:flex; justify-content:space-around; padding:10px 0 14px; }
+.bottom-nav button { background:none; border:none; color:#888; font-size:24px; width:auto; padding:0; margin:0; }
+.bottom-nav button.active { color:#fff; }
+.admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:2px 6px; border-radius:8px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<div id="auth" class="card">
+  <h1>Vibe</h1>
+  <div id="loginForm">
+    <input id="username" placeholder="Usuário" value="admin">
+    <input id="email" type="email" placeholder="Email" class="hidden">
+    <input id="password" type="password" placeholder="Senha" value="@@Jm6134@@">
+    <button onclick="doAuth()">Entrar</button>
+    <div class="toggle" onclick="toggleAuth()">Não tem conta? Cadastre-se</div>
+    <div class="error" id="authError"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="header">
+    <div class="logo">Vibe</div>
+    <div>
+      <span id="userLabel"></span>
+      <button class="secondary" style="width:auto;padding:6px 12px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="stories">
+    <div class="story"><div class="story-ring"><div>👤</div></div><span>Você</span></div>
+    <div class="story"><div class="story-ring"><div>🔥</div></div><span>Lucas</span></div>
+    <div class="story"><div class="story-ring"><div>✨</div></div><span>Sofia</span></div>
+    <div class="story"><div class="story-ring"><div>🐶</div></div><span>Max</span></div>
+  </div>
+  <div style="padding:0 16px 12px;">
+    <input id="newPost" placeholder="No que você está pensando?">
+    <button onclick="publish()">Publicar</button>
+  </div>
+  <div id="feed"></div>
+  <div class="bottom-nav">
+    <button class="active">🏠</button>
+    <button>🔍</button>
+    <button>➕</button>
+    <button>❤️</button>
+    <button>👤</button>
+  </div>
+</div>
+
+<script>
+const DB_KEY = "vibe_db";
+let isRegister = false;
+
+function loadDB() {
+  const raw = localStorage.getItem(DB_KEY);
+  if (!raw) {
+    const db = {
+      users: {
+        admin: {
+          username: "admin",
+          email: "admin@vibe.com",
+          password: "@@Jm6134@@",
+          is_admin: true
+        }
+      },
+      posts: []
+    };
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+    return db;
+  }
+  return JSON.parse(raw);
+}
+
+function saveDB(db) {
+  localStorage.setItem(DB_KEY, JSON.stringify(db));
+}
+
+function $(id){ return document.getElementById(id); }
+
+function toggleAuth(){
+  isRegister = !isRegister;
+  $("email").classList.toggle("hidden", !isRegister);
+  $("auth").querySelector(".toggle").textContent = isRegister ? "Já tem conta? Entrar" : "Não tem conta? Cadastre-se";
+  $("auth").querySelector("button").textContent = isRegister ? "Cadastrar" : "Entrar";
+  $("authError").textContent = "";
+}
+
+function doAuth(){
+  const username = $("username").value.trim();
+  const password = $("password").value;
+  const email = $("email").value.trim();
+  $("authError").textContent = "";
+  const db = loadDB();
+
+  if (isRegister) {
+    if (db.users[username]) {
+      $("authError").textContent = "Usuário já existe";
+      return;
+    }
+    if (password.length < 6) {
+      $("authError").textContent = "Senha muito curta";
+      return;
+    }
+    db.users[username] = { username, email, password, is_admin: false };
+    saveDB(db);
+    $("authError").className = "error success";
+    $("authError").textContent = "Cadastro feito! Agora entre.";
+    isRegister = true;
+    toggleAuth();
+    return;
+  }
+
+  const user = db.users[username];
+  if (!user || user.password !== password) {
+    $("authError").className = "error";
+    $("authError").textContent = "Usuário ou senha inválidos";
+    return;
+  }
+  localStorage.setItem("vibe_session", username);
+  showApp(user);
+}
+
+function showApp(user){
+  $("auth").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("userLabel").innerHTML = user.username + (user.is_admin ? '<span class="admin-badge">ADMIN</span>' : '');
+  loadPosts();
+}
+
+function loadPosts(){
+  const db = loadDB();
+  const posts = [...db.posts].reverse();
+  $("feed").innerHTML = posts.map(p => `
+    <div class="post">
+      <div class="post-header">
+        <div class="avatar">${p.username[0].toUpperCase()}</div>
+        <div><strong>${p.username}</strong><br><small style="color:#888">${new Date(p.created_at).toLocaleString("pt-BR")}</small></div>
+      </div>
+      <div class="post-text">${escapeHtml(p.content)}</div>
+      <div class="post-actions">❤️ 💬 📤</div>
+    </div>
+  `).join("") || "<p style='padding:20px;color:#888;text-align:center;'>Nenhum post ainda. Seja o primeiro!</p>";
+}
+
+function publish(){
+  const content = $("newPost").value.trim();
+  if (!content) return;
+  const db = loadDB();
+  const username = localStorage.getItem("vibe_session");
+  db.posts.push({
+    username,
+    content,
+    created_at: new Date().toISOString()
+  });
+  saveDB(db);
+  $("newPost").value = "";
+  loadPosts();
+}
+
+function logout(){
+  localStorage.removeItem("vibe_session");
+  $("app").classList.add("hidden");
+  $("auth").classList.remove("hidden");
+  $("password").value = "";
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+const session = localStorage.getItem("vibe_session");
+if (session) {
+  const db = loadDB();
+  if (db.users[session]) showApp(db.users[session]);
+}
+</script>
+</body>
+</html>
