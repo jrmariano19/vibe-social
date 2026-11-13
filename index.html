@@ -2,46 +2,53 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Vibe</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Inter,system-ui,sans-serif; background:#000; color:#fff; min-height:100vh; }
 .hidden { display:none !important; }
 .card { background:#111; border:1px solid #222; border-radius:24px; padding:32px; width:100%; max-width:420px; margin:40px auto; }
 h1 { font-size:34px; font-weight:700; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; margin-bottom:24px; }
-input { width:100%; padding:14px 16px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:14px; color:#fff; font-size:15px; }
+input { width:100%; padding:14px 16px; margin:8px 0; background:#1a1a1a; border:1px solid #333; border-radius:14px; color:#fff; font-size:15px; outline:none; }
 button { width:100%; padding:14px; margin-top:12px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; border-radius:14px; color:#fff; font-weight:600; cursor:pointer; font-size:15px; }
 button.secondary { background:#222; }
-button:hover { opacity:.92; }
 .toggle { text-align:center; margin-top:16px; color:#888; cursor:pointer; font-size:14px; }
 .error { color:#ef4444; font-size:13px; margin-top:10px; text-align:center; min-height:18px; }
-.success { color:#22c55e; }
 
 #app { max-width:500px; margin:0 auto; padding-bottom:90px; }
-.header { position:sticky; top:0; background:rgba(0,0,0,.9); backdrop-filter:blur(12px); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; z-index:20; }
+.header { position:sticky; top:0; background:rgba(0,0,0,.92); backdrop-filter:blur(16px); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #1a1a1a; z-index:30; }
 .logo { font-weight:700; font-size:24px; background:linear-gradient(90deg,#a855f7,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.stories { display:flex; gap:16px; padding:16px; overflow-x:auto; scrollbar-width:none; }
+.stories { display:flex; gap:14px; padding:14px 16px; overflow-x:auto; scrollbar-width:none; }
 .stories::-webkit-scrollbar { display:none; }
-.story { text-align:center; min-width:76px; cursor:pointer; }
-.story-ring { width:70px; height:70px; border-radius:50%; padding:3px; background:linear-gradient(45deg,#a855f7,#ec4899); margin:0 auto 6px; transition:transform .2s; }
-.story:hover .story-ring { transform:scale(1.06); }
-.story-ring div { width:100%; height:100%; border-radius:50%; background:#1a1a1a; border:3px solid #000; display:flex; align-items:center; justify-content:center; font-size:26px; }
-.story span { font-size:12px; color:#aaa; }
-.post { border-bottom:1px solid #222; padding:8px 0 16px; }
-.post-header { display:flex; align-items:center; gap:12px; padding:12px 16px; }
-.avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#a855f7,#ec4899); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; }
-.post-img { width:100%; max-height:420px; object-fit:cover; background:#111; display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; min-height:200px; }
-.post-text { padding:10px 16px 6px; font-size:14.5px; line-height:1.5; }
-.post-actions { display:flex; gap:20px; padding:8px 16px; font-size:22px; }
-.post-actions span { cursor:pointer; transition:transform .15s; }
-.post-actions span:hover { transform:scale(1.15); }
-.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background:#000; border-top:1px solid #222; display:flex; justify-content:space-around; padding:10px 0 16px; }
-.bottom-nav button { background:none; border:none; color:#888; font-size:26px; width:auto; padding:0; margin:0; }
+.story { text-align:center; min-width:72px; }
+.story-ring { width:68px; height:68px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); margin:0 auto 5px; }
+.story-ring img, .story-ring div { width:100%; height:100%; border-radius:50%; object-fit:cover; border:2.5px solid #000; background:#1a1a1a; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.story span { font-size:11px; color:#aaa; }
+.post { border-bottom:1px solid #1a1a1a; }
+.post-header { display:flex; align-items:center; gap:10px; padding:12px 14px; }
+.avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; background:linear-gradient(135deg,#a855f7,#ec4899); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+.post-img { width:100%; display:block; max-height:480px; object-fit:cover; background:#111; }
+.post-actions { display:flex; align-items:center; gap:16px; padding:10px 14px 4px; }
+.action { font-size:24px; cursor:pointer; background:none; border:none; color:#fff; padding:4px; transition:transform .15s; }
+.action:active { transform:scale(1.25); }
+.action.liked { color:#ef4444; }
+.post-likes { font-weight:600; font-size:14px; padding:0 14px 4px; }
+.post-text { padding:2px 14px 10px; font-size:14px; line-height:1.45; }
+.post-text strong { margin-right:4px; }
+.comments { padding:0 14px 12px; display:none; }
+.comments.open { display:block; }
+.comment { font-size:13.5px; margin:6px 0; }
+.comment strong { margin-right:5px; }
+.comment-input { display:flex; gap:8px; margin-top:8px; }
+.comment-input input { flex:1; padding:8px 12px; border-radius:20px; background:#1a1a1a; border:1px solid #333; color:#fff; font-size:13px; }
+.comment-input button { width:auto; padding:8px 14px; margin:0; border-radius:20px; font-size:13px; }
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background:#000; border-top:1px solid #1a1a1a; display:flex; justify-content:space-around; padding:8px 0 14px; z-index:30; }
+.bottom-nav button { background:none; border:none; color:#888; font-size:26px; width:auto; padding:6px; margin:0; }
 .bottom-nav button.active { color:#fff; }
-.admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:3px 7px; border-radius:10px; margin-left:6px; font-weight:600; }
-.create-box { padding:0 16px 16px; }
+.admin-badge { background:#a855f7; color:#fff; font-size:10px; padding:2px 6px; border-radius:8px; margin-left:6px; }
+.create-box { padding:8px 14px 12px; }
 </style>
 </head>
 <body>
@@ -63,17 +70,11 @@ button:hover { opacity:.92; }
     <div class="logo">Vibe</div>
     <div>
       <span id="userLabel"></span>
-      <button class="secondary" style="width:auto;padding:7px 14px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
+      <button class="secondary" style="width:auto;padding:6px 12px;font-size:13px;margin-left:8px;" onclick="logout()">Sair</button>
     </div>
   </div>
 
-  <div class="stories">
-    <div class="story"><div class="story-ring"><div>👤</div></div><span>Você</span></div>
-    <div class="story"><div class="story-ring"><div>🌅</div></div><span>Maria</span></div>
-    <div class="story"><div class="story-ring"><div>🥗</div></div><span>Lucas</span></div>
-    <div class="story"><div class="story-ring"><div>🌃</div></div><span>Sofia</span></div>
-    <div class="story"><div class="story-ring"><div>🐶</div></div><span>Max</span></div>
-  </div>
+  <div class="stories" id="stories"></div>
 
   <div class="create-box">
     <input id="newPost" placeholder="No que você está pensando?">
@@ -83,38 +84,37 @@ button:hover { opacity:.92; }
   <div id="feed"></div>
 
   <div class="bottom-nav">
-    <button class="active">🏠</button>
-    <button>🔍</button>
-    <button>➕</button>
-    <button>❤️</button>
-    <button>👤</button>
+    <button class="active" onclick="alert('Feed')">🏠</button>
+    <button onclick="alert('Explorar em breve')">🔍</button>
+    <button onclick="$('newPost').focus()">➕</button>
+    <button onclick="alert('Atividade')">❤️</button>
+    <button onclick="alert('Perfil')">👤</button>
   </div>
 </div>
 
 <script>
-const DB_KEY = "vibe_db_v2";
+const DB_KEY = "vibe_db_v3";
 let isRegister = false;
+
+const SAMPLE_POSTS = [
+  { id:1, username:"Maria Silva", avatar:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800", content:"Pôr do sol nas montanhas hoje foi simplesmente mágico! 🌅✨ #Vibe", likes:1284, comments:[{user:"Lucas", text:"Que foto incrível!"}], time:"há 2h" },
+  { id:2, username:"Lucas Oliveira", avatar:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800", content:"Bowl colorido e saudável para começar o dia! 🥗💚", likes:892, comments:[], time:"há 5h" },
+  { id:3, username:"Sofia Costa", avatar:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", img:"https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800", content:"A cidade nunca dorme. Noite mágica 🌃💜 #Vibe", likes:2156, comments:[], time:"há 1 dia" },
+  { id:4, username:"Você", avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100", img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=800", content:"Meu companheiro de aventuras hoje! 🐶☀️", likes:543, comments:[], time:"agora" }
+];
 
 function loadDB() {
   const raw = localStorage.getItem(DB_KEY);
   if (!raw) {
     const db = {
-      users: {
-        admin: { username: "admin", email: "admin@vibe.com", password: "@@Jm6134@@", is_admin: true }
-      },
-      posts: [
-        { username: "Maria", content: "Pôr do sol nas montanhas hoje foi simplesmente mágico! 🌅✨ #Vibe", emoji: "🌅", time: "há 2h" },
-        { username: "Lucas", content: "Bowl colorido e saudável para começar o dia com energia! 🥗💚", emoji: "🥗", time: "há 5h" },
-        { username: "Sofia", content: "A cidade nunca dorme. Noite mágica com essas luzes neon. 🌃💜 #Vibe", emoji: "🌃", time: "há 1 dia" },
-        { username: "Você", content: "Meu companheiro de aventuras hoje! Quem mais ama passeios no parque? 🐶☀️", emoji: "🐶", time: "agora" }
-      ]
+      users: { admin: { username:"admin", email:"admin@vibe.com", password:"@@Jm6134@@", is_admin:true } },
+      posts: SAMPLE_POSTS
     };
     localStorage.setItem(DB_KEY, JSON.stringify(db));
     return db;
   }
   return JSON.parse(raw);
 }
-
 function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 function $(id){ return document.getElementById(id); }
 
@@ -132,24 +132,17 @@ function doAuth(){
   const email = $("email").value.trim();
   $("authError").textContent = "";
   const db = loadDB();
-
   if (isRegister) {
     if (db.users[username]) { $("authError").textContent = "Usuário já existe"; return; }
     if (password.length < 6) { $("authError").textContent = "Senha muito curta"; return; }
-    db.users[username] = { username, email, password, is_admin: false };
+    db.users[username] = { username, email, password, is_admin:false };
     saveDB(db);
-    $("authError").className = "error success";
     $("authError").textContent = "Cadastro feito! Agora entre.";
     isRegister = true; toggleAuth();
     return;
   }
-
   const user = db.users[username];
-  if (!user || user.password !== password) {
-    $("authError").className = "error";
-    $("authError").textContent = "Usuário ou senha inválidos";
-    return;
-  }
+  if (!user || user.password !== password) { $("authError").textContent = "Usuário ou senha inválidos"; return; }
   localStorage.setItem("vibe_session", username);
   showApp(user);
 }
@@ -158,23 +151,85 @@ function showApp(user){
   $("auth").classList.add("hidden");
   $("app").classList.remove("hidden");
   $("userLabel").innerHTML = user.username + (user.is_admin ? '<span class="admin-badge">ADMIN</span>' : '');
+  renderStories();
   loadPosts();
+}
+
+function renderStories(){
+  const stories = [
+    {name:"Você", img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150"},
+    {name:"Maria", img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"},
+    {name:"Lucas", img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"},
+    {name:"Sofia", img:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"},
+    {name:"Max", img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=150"}
+  ];
+  $("stories").innerHTML = stories.map(s => `
+    <div class="story">
+      <div class="story-ring"><img src="${s.img}" alt="${s.name}"></div>
+      <span>${s.name}</span>
+    </div>
+  `).join("");
 }
 
 function loadPosts(){
   const db = loadDB();
   const posts = [...db.posts].reverse();
-  $("feed").innerHTML = posts.map(p => `
-    <div class="post">
+  $("feed").innerHTML = posts.map((p, idx) => `
+    <div class="post" data-id="${p.id || idx}">
       <div class="post-header">
-        <div class="avatar">${(p.username||"?")[0].toUpperCase()}</div>
-        <div><strong>${p.username}</strong><br><small style="color:#888">${p.time || new Date(p.created_at||Date.now()).toLocaleString("pt-BR")}</small></div>
+        <img class="avatar" src="${p.avatar || ''}" onerror="this.style.background='linear-gradient(135deg,#a855f7,#ec4899)';this.src=''">
+        <div><strong>${p.username}</strong><br><small style="color:#888">${p.time || "agora"}</small></div>
       </div>
-      <div class="post-img">${p.emoji || "📸"}</div>
+      ${p.img ? `<img class="post-img" src="${p.img}" alt="">` : `<div class="post-img" style="height:200px;display:flex;align-items:center;justify-content:center;font-size:48px;">✨</div>`}
+      <div class="post-actions">
+        <button class="action like-btn ${p.liked?'liked':''}" onclick="toggleLike(this, ${p.id||idx})">❤️</button>
+        <button class="action" onclick="toggleComments(this)">💬</button>
+        <button class="action">📤</button>
+      </div>
+      <div class="post-likes"><span class="like-count">${p.likes || 0}</span> curtidas</div>
       <div class="post-text"><strong>${p.username}</strong> ${escapeHtml(p.content)}</div>
-      <div class="post-actions"><span>❤️</span><span>💬</span><span>📤</span></div>
+      <div class="comments">
+        ${(p.comments||[]).map(c => `<div class="comment"><strong>${c.user}</strong>${escapeHtml(c.text)}</div>`).join("")}
+        <div class="comment-input">
+          <input placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter') addComment(this, ${p.id||idx})">
+          <button onclick="addComment(this.previousElementSibling, ${p.id||idx})">Enviar</button>
+        </div>
+      </div>
     </div>
-  `).join("") || "<p style='padding:30px;color:#888;text-align:center;'>Nenhum post ainda. Seja o primeiro!</p>";
+  `).join("");
+}
+
+function toggleLike(btn, id){
+  const db = loadDB();
+  const post = db.posts.find(p => p.id === id) || db.posts[id];
+  if (!post) return;
+  post.liked = !post.liked;
+  post.likes = (post.likes||0) + (post.liked ? 1 : -1);
+  saveDB(db);
+  btn.classList.toggle("liked", post.liked);
+  btn.closest(".post").querySelector(".like-count").textContent = post.likes;
+}
+
+function toggleComments(btn){
+  btn.closest(".post").querySelector(".comments").classList.toggle("open");
+}
+
+function addComment(input, id){
+  const text = input.value.trim();
+  if (!text) return;
+  const db = loadDB();
+  const post = db.posts.find(p => p.id === id) || db.posts[id];
+  if (!post) return;
+  if (!post.comments) post.comments = [];
+  const user = localStorage.getItem("vibe_session") || "Você";
+  post.comments.push({user, text});
+  saveDB(db);
+  const commentsDiv = input.closest(".comments");
+  const div = document.createElement("div");
+  div.className = "comment";
+  div.innerHTML = `<strong>${user}</strong>${escapeHtml(text)}`;
+  commentsDiv.insertBefore(div, input.parentElement);
+  input.value = "";
 }
 
 function publish(){
@@ -182,7 +237,15 @@ function publish(){
   if (!content) return;
   const db = loadDB();
   const username = localStorage.getItem("vibe_session") || "Você";
-  db.posts.push({ username, content, emoji: "✨", created_at: new Date().toISOString(), time: "agora" });
+  db.posts.push({
+    id: Date.now(),
+    username,
+    content,
+    likes: 0,
+    comments: [],
+    time: "agora",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"
+  });
   saveDB(db);
   $("newPost").value = "";
   loadPosts();
@@ -196,7 +259,7 @@ function logout(){
 }
 
 function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 const session = localStorage.getItem("vibe_session");
