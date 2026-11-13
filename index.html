@@ -24,18 +24,17 @@ button.secondary { background:#222; border:none; border-radius:14px; color:#fff;
 .stories::-webkit-scrollbar { display:none; }
 .story { text-align:center; min-width:72px; cursor:pointer; }
 .story-ring { width:68px; height:68px; border-radius:50%; padding:2.5px; background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); margin:0 auto 5px; transition:transform .2s; }
-.story:hover .story-ring { transform:scale(1.05); }
+.story:active .story-ring { transform:scale(1.06); }
 .story-ring img { width:100%; height:100%; border-radius:50%; object-fit:cover; border:2.5px solid #000; }
 .story span { font-size:11px; color:#aaa; }
 .post { border-bottom:1px solid #1a1a1a; animation:fadeIn .3s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 .post-header { display:flex; align-items:center; gap:10px; padding:12px 14px; }
-.avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; }
+.avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; background:#333; }
 .post-img { width:100%; display:block; max-height:520px; object-fit:cover; background:#111; }
 .post-actions { display:flex; align-items:center; gap:18px; padding:10px 14px 4px; }
 .action { background:none; border:none; color:#fff; padding:4px; cursor:pointer; display:flex; align-items:center; transition:transform .15s; }
-.action:active { transform:scale(1.2); }
-.action.liked svg { fill:#ef4444; stroke:#ef4444; }
+.action:active { transform:scale(1.25); }
 .post-likes { font-weight:600; font-size:14px; padding:0 14px 4px; }
 .post-text { padding:2px 14px 10px; font-size:14px; line-height:1.45; }
 .post-text strong { margin-right:4px; }
@@ -45,7 +44,7 @@ button.secondary { background:#222; border:none; border-radius:14px; color:#fff;
 .comment strong { margin-right:5px; }
 .comment-input { display:flex; gap:8px; margin-top:8px; }
 .comment-input input { flex:1; padding:8px 12px; border-radius:20px; background:#1a1a1a; border:1px solid #333; color:#fff; font-size:13px; }
-.comment-input button { width:auto; padding:8px 14px; margin:0; border-radius:20px; font-size:13px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; color:#fff; }
+.comment-input button { width:auto; padding:8px 14px; margin:0; border-radius:20px; font-size:13px; background:linear-gradient(90deg,#a855f7,#ec4899); border:none; color:#fff; cursor:pointer; }
 .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background:#000; border-top:1px solid #1a1a1a; display:flex; justify-content:space-around; padding:8px 0 14px; z-index:30; }
 .bottom-nav button { background:none; border:none; color:#888; padding:6px; cursor:pointer; }
 .bottom-nav button.active { color:#fff; }
@@ -53,10 +52,12 @@ button.secondary { background:#222; border:none; border-radius:14px; color:#fff;
 .create-box { padding:8px 14px 12px; }
 .view { display:none; }
 .view.active { display:block; }
-.profile { padding:20px 16px; text-align:center; }
-.profile img { width:90px; height:90px; border-radius:50%; object-fit:cover; margin-bottom:12px; }
-.profile h2 { font-size:20px; margin-bottom:4px; }
+.profile { padding:24px 16px; text-align:center; }
+.profile img { width:96px; height:96px; border-radius:50%; object-fit:cover; margin-bottom:12px; border:3px solid #a855f7; }
+.profile h2 { font-size:22px; margin-bottom:6px; }
 .profile p { color:#888; font-size:14px; }
+.toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#222; color:#fff; padding:10px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .3s; z-index:50; }
+.toast.show { opacity:1; }
 </style>
 </head>
 <body>
@@ -82,7 +83,6 @@ button.secondary { background:#222; border:none; border-radius:14px; color:#fff;
     </div>
   </div>
 
-  <!-- FEED VIEW -->
   <div id="viewFeed" class="view active">
     <div class="stories" id="stories"></div>
     <div class="create-box">
@@ -92,34 +92,34 @@ button.secondary { background:#222; border:none; border-radius:14px; color:#fff;
     <div id="feed"></div>
   </div>
 
-  <!-- SEARCH VIEW -->
   <div id="viewSearch" class="view">
-    <div style="padding:20px;text-align:center;color:#888;">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.5;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <p>Busca em breve</p>
+    <div style="padding:40px 20px;text-align:center;color:#666;">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:.4;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <p style="font-size:15px;">Busca em breve</p>
     </div>
   </div>
 
-  <!-- PROFILE VIEW -->
   <div id="viewProfile" class="view">
     <div class="profile">
       <img id="profileAvatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200" alt="">
       <h2 id="profileName">Você</h2>
-      <p>0 posts · 0 seguidores</p>
+      <p id="profileStats">0 posts</p>
     </div>
   </div>
 
   <div class="bottom-nav">
     <button class="active" data-view="viewFeed"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
     <button data-view="viewSearch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
-    <button onclick="document.getElementById('newPost').focus(); switchView('viewFeed')"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+    <button onclick="switchView('viewFeed'); setTimeout(()=>document.getElementById('newPost').focus(),100)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
     <button data-view="viewSearch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
     <button data-view="viewProfile"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const DB_KEY = "vibe_db_final";
+const DB_KEY = "vibe_db_v100";
 let isRegister = false;
 
 const SAMPLE = [
@@ -140,6 +140,13 @@ function loadDB() {
 }
 function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 function $(id){ return document.getElementById(id); }
+
+function showToast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1800);
+}
 
 function toggleAuth(){
   isRegister = !isRegister;
@@ -177,6 +184,14 @@ function showApp(user){
   $("profileName").textContent = user.username;
   renderStories();
   loadPosts();
+  updateProfileStats();
+}
+
+function updateProfileStats(){
+  const db = loadDB();
+  const user = localStorage.getItem("vibe_session");
+  const count = db.posts.filter(p => p.username === user).length;
+  $("profileStats").textContent = count + " posts";
 }
 
 function renderStories(){
@@ -194,73 +209,84 @@ function loadPosts(){
   const db = loadDB();
   const posts = [...db.posts].reverse();
   $("feed").innerHTML = posts.map((p,i) => `
-    <div class="post">
+    <div class="post" data-id="${p.id}">
       <div class="post-header">
-        <img class="avatar" src="${p.avatar||''}" onerror="this.src='https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100'">
+        <img class="avatar" src="${p.avatar||'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100'}" alt="">
         <div><strong>${p.username}</strong><br><small style="color:#888">${p.time||"agora"}</small></div>
       </div>
       ${p.img ? `<img class="post-img" src="${p.img}" alt="">` : ""}
       <div class="post-actions">
-        <button class="action like-btn ${p.liked?'liked':''}" onclick="toggleLike(this,${p.id||i})">
+        <button class="action like-btn" onclick="toggleLike(${p.id})">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="${p.liked?'#ef4444':'none'}" stroke="${p.liked?'#ef4444':'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
-        <button class="action" onclick="this.closest('.post').querySelector('.comments').classList.toggle('open')">
+        <button class="action" onclick="toggleComments(${p.id})">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </button>
-        <button class="action">
+        <button class="action" onclick="showToast('Compartilhar em breve')">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         </button>
       </div>
       <div class="post-likes"><span class="like-count">${p.likes||0}</span> curtidas</div>
       <div class="post-text"><strong>${p.username}</strong> ${escapeHtml(p.content)}</div>
-      <div class="comments">
+      <div class="comments" id="comments-${p.id}">
         ${(p.comments||[]).map(c=>`<div class="comment"><strong>${c.user}</strong>${escapeHtml(c.text)}</div>`).join("")}
         <div class="comment-input">
-          <input placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter')addComment(this,${p.id||i})">
-          <button onclick="addComment(this.previousElementSibling,${p.id||i})">Enviar</button>
+          <input placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter')addComment(this,${p.id})">
+          <button onclick="addComment(this.previousElementSibling,${p.id})">Enviar</button>
         </div>
       </div>
     </div>
   `).join("");
+  updateProfileStats();
 }
 
-function toggleLike(btn, id){
+function toggleLike(id){
   const db = loadDB();
-  const post = db.posts.find(p=>p.id===id) || db.posts[id];
+  const post = db.posts.find(p => p.id === id);
   if (!post) return;
   post.liked = !post.liked;
-  post.likes = (post.likes||0) + (post.liked?1:-1);
+  post.likes = (post.likes||0) + (post.liked ? 1 : -1);
   saveDB(db);
-  const svg = btn.querySelector("svg");
-  if (post.liked) { svg.setAttribute("fill","#ef4444"); svg.setAttribute("stroke","#ef4444"); btn.classList.add("liked"); }
-  else { svg.setAttribute("fill","none"); svg.setAttribute("stroke","currentColor"); btn.classList.remove("liked"); }
-  btn.closest(".post").querySelector(".like-count").textContent = post.likes;
+  loadPosts();
+}
+
+function toggleComments(id){
+  const el = document.getElementById("comments-"+id);
+  if (el) el.classList.toggle("open");
 }
 
 function addComment(input, id){
-  const text = input.value.trim(); if (!text) return;
+  const text = input.value.trim();
+  if (!text) return;
   const db = loadDB();
-  const post = db.posts.find(p=>p.id===id) || db.posts[id];
+  const post = db.posts.find(p => p.id === id);
   if (!post) return;
   if (!post.comments) post.comments = [];
   const user = localStorage.getItem("vibe_session") || "Você";
   post.comments.push({user, text});
   saveDB(db);
-  const div = document.createElement("div");
-  div.className = "comment";
-  div.innerHTML = `<strong>${user}</strong>${escapeHtml(text)}`;
-  input.closest(".comments").insertBefore(div, input.parentElement);
-  input.value = "";
+  loadPosts();
+  showToast("Comentário adicionado");
 }
 
 function publish(){
-  const content = $("newPost").value.trim(); if (!content) return;
+  const content = $("newPost").value.trim();
+  if (!content) { showToast("Escreva algo antes de publicar"); return; }
   const db = loadDB();
   const username = localStorage.getItem("vibe_session") || "Você";
-  db.posts.push({ id:Date.now(), username, content, likes:0, comments:[], time:"agora", avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" });
+  db.posts.push({
+    id: Date.now(),
+    username,
+    content,
+    likes: 0,
+    comments: [],
+    time: "agora",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"
+  });
   saveDB(db);
   $("newPost").value = "";
   loadPosts();
+  showToast("Publicado!");
 }
 
 function switchView(id){
@@ -275,11 +301,13 @@ function logout(){
   $("app").classList.add("hidden");
   $("auth").classList.remove("hidden");
   $("password").value = "";
+  showToast("Você saiu");
 }
 
-function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, c=>({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c])); }
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+}
 
-// Nav clicks
 document.querySelectorAll(".bottom-nav button[data-view]").forEach(btn => {
   btn.addEventListener("click", () => switchView(btn.dataset.view));
 });
