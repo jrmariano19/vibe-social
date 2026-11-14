@@ -82,14 +82,16 @@ button.secondary{background:#222;border:none;border-radius:14px;color:#fff;paddi
     <div class="stories" id="stories"></div>
     <div class="create-box">
       <input id="newPost" placeholder="No que você está pensando?">
+      <input type="file" id="postImage" accept="image/*" style="margin:6px 0;color:#aaa;font-size:13px">
       <button class="primary" id="publishBtn">Publicar</button>
     </div>
     <div id="feed"></div>
   </div>
 
   <div id="viewSearch" class="view">
-    <div style="padding:40px 20px;text-align:center;color:#666">
-      <p style="font-size:15px">Busca em breve</p>
+    <div style="padding:16px">
+      <input id="searchInput" placeholder="Buscar posts ou usuários..." style="margin-bottom:12px">
+      <div id="searchResults"></div>
     </div>
   </div>
 
@@ -242,11 +244,22 @@ $("publishBtn").onclick = ()=>{
   const db = load();
   const u = localStorage.getItem("vibe_session")||"Você";
   const profile = db.users[u] || {};
-  db.posts.push({id:Date.now(),username:u,content:c,likes:0,comments:[],time:"agora",avatar:profile.avatar||"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"});
-  save(db);
-  $("newPost").value="";
-  renderFeed();
-  toast("Publicado!");
+  const imgInput = $("postImage");
+  const doPublish = (imgData) => {
+    db.posts.push({id:Date.now(),username:u,content:c,likes:0,comments:[],time:"agora",avatar:profile.avatar||"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",img:imgData||""});
+    save(db);
+    $("newPost").value="";
+    imgInput.value="";
+    renderFeed();
+    toast("Publicado!");
+  };
+  if (imgInput.files && imgInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => doPublish(reader.result);
+    reader.readAsDataURL(imgInput.files[0]);
+  } else {
+    doPublish("");
+  }
 };
 
 // Profile photo
@@ -350,6 +363,22 @@ $("stories").addEventListener("click", e => {
   if (!story) return;
   const name = story.querySelector("span")?.textContent || "Story";
   toast("Story de " + name);
+});
+
+
+// Search
+$("searchInput")?.addEventListener("input", () => {
+  const q = $("searchInput").value.trim().toLowerCase();
+  const db = load();
+  const results = db.posts.filter(p => 
+    p.content.toLowerCase().includes(q) || p.username.toLowerCase().includes(q)
+  );
+  $("searchResults").innerHTML = q ? results.map(p => `
+    <div style="padding:12px;border-bottom:1px solid #222">
+      <strong>${p.username}</strong>
+      <p style="color:#aaa;font-size:14px;margin-top:4px">${esc(p.content)}</p>
+    </div>
+  `).join("") || "<p style='color:#666;padding:20px;text-align:center'>Nenhum resultado</p>" : "";
 });
 
 // Auto login
