@@ -50,11 +50,14 @@ button.secondary{background:#222;border:none;border-radius:14px;color:#fff;paddi
 .view{display:none}
 .view.active{display:block}
 .profile{padding:24px 16px;text-align:center}
-.profile img{width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:12px;border:3px solid #a855f7}
+.profile img{width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:12px;border:3px solid #a855f7;cursor:pointer}
 .profile h2{font-size:22px;margin-bottom:6px}
-.profile p{color:#888;font-size:14px}
+.profile p{color:#888;font-size:14px;margin-bottom:12px}
+.profile-edit{margin-top:16px}
+.profile-edit input{margin:6px 0}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:50}
 .toast.show{opacity:1}
+#photoInput{display:none}
 </style>
 </head>
 <body>
@@ -92,9 +95,16 @@ button.secondary{background:#222;border:none;border-radius:14px;color:#fff;paddi
 
   <div id="viewProfile" class="view">
     <div class="profile">
-      <img id="profileAvatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200" alt="">
+      <img id="profileAvatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200" alt="Foto" title="Toque para mudar">
+      <input type="file" id="photoInput" accept="image/*">
       <h2 id="profileName">Você</h2>
+      <p id="profileBio">Sem biografia</p>
       <p id="profileStats">0 posts</p>
+      <div class="profile-edit">
+        <input id="editName" placeholder="Nome">
+        <input id="editBio" placeholder="Biografia">
+        <button class="primary" id="saveProfile">Salvar perfil</button>
+      </div>
     </div>
   </div>
 
@@ -120,19 +130,33 @@ const SAMPLE = [
   {id:4,username:"Você",avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",img:"https://images.unsplash.com/photo-1552053831-71594a27632d?w=800",content:"Meu companheiro de aventuras hoje! 🐶☀️",likes:543,comments:[],time:"agora"}
 ];
 
-function load(){const r=localStorage.getItem(DB);if(!r){const d={users:{admin:{username:"admin",email:"admin@vibe.com",password:"@@Jm6134@@",is_admin:true}},posts:SAMPLE};localStorage.setItem(DB,JSON.stringify(d));return d}return JSON.parse(r)}
+function load(){const r=localStorage.getItem(DB);if(!r){const d={users:{admin:{username:"admin",email:"admin@vibe.com",password:"@@Jm6134@@",is_admin:true,bio:"",avatar:""}},posts:SAMPLE};localStorage.setItem(DB,JSON.stringify(d));return d}return JSON.parse(r)}
 function save(d){localStorage.setItem(DB,JSON.stringify(d))}
 function $(id){return document.getElementById(id)}
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]))}
 
+function getProfile(){
+  const db = load();
+  const u = localStorage.getItem("vibe_session");
+  return db.users[u] || {};
+}
+
 function showApp(user){
   $("auth").classList.add("hidden");
   $("app").classList.remove("hidden");
   $("userLabel").innerHTML = user.username + (user.is_admin?'<span class="admin-badge">ADMIN</span>':'');
-  $("profileName").textContent = user.username;
+  updateProfileUI(user);
   renderStories();
   renderFeed();
+}
+
+function updateProfileUI(user){
+  $("profileName").textContent = user.username;
+  $("profileBio").textContent = user.bio || "Sem biografia";
+  $("editName").value = user.username;
+  $("editBio").value = user.bio || "";
+  if (user.avatar) $("profileAvatar").src = user.avatar;
 }
 
 function renderStories(){
@@ -153,7 +177,7 @@ function renderFeed(){
       <div class="post-actions">
         <button class="action like" data-id="${p.id}"><svg width="26" height="26" viewBox="0 0 24 24" fill="${p.liked?'#ef4444':'none'}" stroke="${p.liked?'#ef4444':'currentColor'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
         <button class="action comment" data-id="${p.id}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
-        <button class="action share"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
+        <button class="action share" data-id="${p.id}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
       </div>
       <div class="post-likes"><span class="lc">${p.likes||0}</span> curtidas</div>
       <div class="post-text"><strong>${p.username}</strong> ${esc(p.content)}</div>
@@ -185,7 +209,7 @@ $("authBtn").onclick = ()=>{
   if(isReg){
     if(db.users[u]){$("authError").textContent="Usuário já existe";return}
     if(p.length<6){$("authError").textContent="Senha muito curta";return}
-    db.users[u]={username:u,email:e,password:p,is_admin:false};
+    db.users[u]={username:u,email:e,password:p,is_admin:false,bio:"",avatar:""};
     save(db);
     $("authError").textContent="Cadastro feito! Agora entre.";
     isReg=true; $("toggleBtn").click();
@@ -217,14 +241,52 @@ $("publishBtn").onclick = ()=>{
   if(!c){toast("Escreva algo");return}
   const db = load();
   const u = localStorage.getItem("vibe_session")||"Você";
-  db.posts.push({id:Date.now(),username:u,content:c,likes:0,comments:[],time:"agora",avatar:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"});
+  const profile = db.users[u] || {};
+  db.posts.push({id:Date.now(),username:u,content:c,likes:0,comments:[],time:"agora",avatar:profile.avatar||"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"});
   save(db);
   $("newPost").value="";
   renderFeed();
   toast("Publicado!");
 };
 
-// Event delegation for feed actions
+// Profile photo
+$("profileAvatar").onclick = () => $("photoInput").click();
+$("photoInput").onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const db = load();
+    const u = localStorage.getItem("vibe_session");
+    if (db.users[u]) {
+      db.users[u].avatar = reader.result;
+      save(db);
+      $("profileAvatar").src = reader.result;
+      toast("Foto atualizada!");
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+// Save profile
+$("saveProfile").onclick = () => {
+  const name = $("editName").value.trim();
+  const bio = $("editBio").value.trim();
+  if (!name) { toast("Nome não pode ficar vazio"); return; }
+  const db = load();
+  const u = localStorage.getItem("vibe_session");
+  if (db.users[u]) {
+    db.users[u].username = name;
+    db.users[u].bio = bio;
+    save(db);
+    localStorage.setItem("vibe_session", name);
+    updateProfileUI(db.users[name] || db.users[u]);
+    $("userLabel").innerHTML = name + (db.users[name]?.is_admin?'<span class="admin-badge">ADMIN</span>':'');
+    toast("Perfil salvo!");
+  }
+};
+
+// Event delegation for feed
 $("feed").addEventListener("click", e=>{
   const like = e.target.closest(".like");
   if(like){
@@ -246,7 +308,16 @@ $("feed").addEventListener("click", e=>{
     return;
   }
   const share = e.target.closest(".share");
-  if(share){toast("Compartilhar em breve");return}
+  if(share){
+    const id = share.dataset.id;
+    const url = location.href.split("#")[0] + "#post-" + id;
+    if (navigator.share) {
+      navigator.share({title:"Vibe", text:"Confira este post no Vibe", url}).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText(url).then(()=>toast("Link copiado!"));
+    }
+    return;
+  }
   const send = e.target.closest(".send");
   if(send){
     const id = +send.dataset.id;
@@ -260,7 +331,6 @@ $("feed").addEventListener("click", e=>{
     post.comments.push({user:localStorage.getItem("vibe_session")||"Você",text});
     save(db);
     renderFeed();
-    toast(post.liked ? "Curtiu!" : "Descurtiu");
     toast("Comentário adicionado");
   }
 });
@@ -274,13 +344,12 @@ $("navCreate").onclick = ()=>{
   setTimeout(()=>$("newPost").focus(),100);
 };
 
-
-// Stories click
+// Stories
 $("stories").addEventListener("click", e => {
   const story = e.target.closest(".story");
   if (!story) return;
   const name = story.querySelector("span")?.textContent || "Story";
-  toast("Story de " + name + " (em breve)");
+  toast("Story de " + name);
 });
 
 // Auto login
