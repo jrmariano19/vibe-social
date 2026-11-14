@@ -236,6 +236,7 @@ $("feed").addEventListener("click", e=>{
     post.likes=(post.likes||0)+(post.liked?1:-1);
     save(db);
     renderFeed();
+    toast(post.liked ? "Curtiu!" : "Descurtiu");
     return;
   }
   const comment = e.target.closest(".comment");
@@ -259,6 +260,7 @@ $("feed").addEventListener("click", e=>{
     post.comments.push({user:localStorage.getItem("vibe_session")||"Você",text});
     save(db);
     renderFeed();
+    toast(post.liked ? "Curtiu!" : "Descurtiu");
     toast("Comentário adicionado");
   }
 });
@@ -271,6 +273,15 @@ $("navCreate").onclick = ()=>{
   switchView("viewFeed");
   setTimeout(()=>$("newPost").focus(),100);
 };
+
+
+// Stories click
+$("stories").addEventListener("click", e => {
+  const story = e.target.closest(".story");
+  if (!story) return;
+  const name = story.querySelector("span")?.textContent || "Story";
+  toast("Story de " + name + " (em breve)");
+});
 
 // Auto login
 const sess = localStorage.getItem("vibe_session");
