@@ -239,27 +239,44 @@ $("logoutBtn").onclick = ()=>{
 
 // Publish
 $("publishBtn").onclick = ()=>{
-  const c = $("newPost").value.trim();
-  if(!c){toast("Escreva algo");return}
-  const db = load();
-  const u = localStorage.getItem("vibe_session")||"Você";
-  const profile = db.users[u] || {};
-  const imgInput = $("postImage");
-  const doPublish = (imgData, isVideo) => {
-    db.posts.push({id:Date.now(),username:u,content:c,likes:0,comments:[],time:"agora",avatar:profile.avatar||"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",img:imgData||"",isVideo:!!isVideo});
-    save(db);
-    $("newPost").value="";
-    imgInput.value="";
-    renderFeed();
-    toast("Publicado!");
-  };
-  if (imgInput.files && imgInput.files[0]) {
-    const file = imgInput.files[0];
-    const reader = new FileReader();
-    reader.onload = () => doPublish(reader.result, file.type.startsWith("video"));
-    reader.readAsDataURL(file);
-  } else {
-    doPublish("", false);
+  try {
+    const c = ($("newPost").value || "").trim();
+    if(!c){ toast("Escreva algo antes de publicar"); return; }
+    const db = load();
+    const u = localStorage.getItem("vibe_session") || "Você";
+    const profile = (db.users && db.users[u]) || {};
+    const imgInput = $("postImage");
+    const doPublish = (imgData, isVideo) => {
+      db.posts = db.posts || [];
+      db.posts.push({
+        id: Date.now(),
+        username: u,
+        content: c,
+        likes: 0,
+        comments: [],
+        time: "agora",
+        avatar: profile.avatar || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
+        img: imgData || "",
+        isVideo: !!isVideo
+      });
+      save(db);
+      $("newPost").value = "";
+      if (imgInput) imgInput.value = "";
+      renderFeed();
+      toast("Publicado!");
+    };
+    if (imgInput && imgInput.files && imgInput.files[0]) {
+      const file = imgInput.files[0];
+      const reader = new FileReader();
+      reader.onload = () => doPublish(reader.result, file.type && file.type.startsWith("video"));
+      reader.onerror = () => { toast("Erro ao ler arquivo"); doPublish("", false); };
+      reader.readAsDataURL(file);
+    } else {
+      doPublish("", false);
+    }
+  } catch(err) {
+    toast("Erro ao publicar");
+    console.error(err);
   }
 };
 
